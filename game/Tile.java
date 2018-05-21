@@ -109,59 +109,95 @@ public class Tile {
 		Graphics2D g = (Graphics2D) tileImage.getGraphics();
 	    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 	    g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
-		
-		if (value == 2) {
-			background = new Color(0xe9e9e9);
-			text = new Color(0x000000);
-		}
-		else if (value == 4) {
-			background = new Color(0xe6daab);
-			text = new Color(0x000000);
-		}
-		else if (value == 8) {
-			background = new Color(0xf79d3d);
-			text = new Color(0xffffff);
-		}
-		else if (value == 16) {
-			background = new Color(0xf28007);
-			text = new Color(0xffffff);
-		}
-		else if (value == 32) {
-			background = new Color(0xf55e3b);
-			text = new Color(0xffffff);
-		}
-		else if (value == 64) {
-			background = new Color(0xff0000);
-			text = new Color(0xffffff);
-		}
-		else if (value == 128) {
-			background = new Color(0xe9de84);
-			text = new Color(0xffffff);
-		}
-		else if (value == 256) {
-			background = new Color(0xf6e873);
-			text = new Color(0xffffff);
-		}
-		else if (value == 512) {
-			background = new Color(0xf5e455);
-			text = new Color(0xffffff);
-		}
-		else if (value == 1024) {
-			background = new Color(0xf7e12c);
-			text = new Color(0xffffff);
-		}
-		else if (value == 2048) {
-			background = new Color(0xffe400);
-			text = new Color(0xffffff);
-		}
-		else if(value == 0){
-			background = Color.lightGray;
-			text = Color.black;
-		}
-		else{
+	    
+	    if(element.isOperator()){
 			background = new Color(0x000000);
 			text = new Color(0xffffff);
-		}
+	    }
+	    else if(element.getVariable() == 1){
+			background = new Color(0xe9e9e9);
+			text = new Color(0x000000);
+	    }
+	    else{
+	    switch(element.getPower()){
+	    case 0:
+			background = new Color(0xf7e12c);
+			text = new Color(0xffffff);
+			break;
+	    case 1:
+			background = new Color(0xe6daab);
+			text = new Color(0x000000);
+			break;
+	    case 2:
+			background = new Color(0xf79d3d);
+			text = new Color(0xffffff);
+			break;
+	    case 3:
+			background = new Color(0xf28007);
+			text = new Color(0xffffff);
+			break;
+	    case 4:
+			background = new Color(0xff0000);
+			text = new Color(0xffffff);
+			break;
+	    default:
+			background = new Color(0xf7e12c);
+			text = new Color(0xffffff);
+			break;
+	    }}
+	    
+//		if (value == 2) {
+//			background = new Color(0xe9e9e9);
+//			text = new Color(0x000000);
+//		}
+//		else if (value == 4) {
+//			background = new Color(0xe6daab);
+//			text = new Color(0x000000);
+//		}
+//		else if (value == 8) {
+//			background = new Color(0xf79d3d);
+//			text = new Color(0xffffff);
+//		}
+//		else if (value == 16) {
+//			background = new Color(0xf28007);
+//			text = new Color(0xffffff);
+//		}
+//		else if (value == 32) {
+//			background = new Color(0xf55e3b);
+//			text = new Color(0xffffff);
+//		}
+//		else if (value == 64) {
+//			background = new Color(0xff0000);
+//			text = new Color(0xffffff);
+//		}
+//		else if (value == 128) {
+//			background = new Color(0xe9de84);
+//			text = new Color(0xffffff);
+//		}
+//		else if (value == 256) {
+//			background = new Color(0xf6e873);
+//			text = new Color(0xffffff);
+//		}
+//		else if (value == 512) {
+//			background = new Color(0xf5e455);
+//			text = new Color(0xffffff);
+//		}
+//		else if (value == 1024) {
+//			background = new Color(0xf7e12c);
+//			text = new Color(0xffffff);
+//		}
+//		else if (value == 2048) {
+//			background = new Color(0xffe400);
+//			text = new Color(0xffffff);
+//		}
+//		else if(value == 0){
+//			background = Color.lightGray;
+//			text = Color.black;
+//		}
+//		else{
+//			background = new Color(0x000000);
+//			text = new Color(0xffffff);
+//		}
 		g.setColor(new Color(0, 0, 0, 0));
 		g.fillRect(0, 0, WIDTH, HEIGHT);
 
@@ -194,9 +230,9 @@ public class Tile {
 		Font powerFont = new Font("Bebas Neue Regular", Font.PLAIN, 14);
 		//g.drawString("" + value, drawX, drawY);
 		String coefficient = "+" + (element.getCoefficient() == 1 ? "" : element.getCoefficient());
-coefficient = "+C";
+coefficient = "+C"; //overwrites a mess of numbers
 		String variable = element.getVariable() == 2 ? "x" : element.getVariable() == 1 ? "C" : "";
-variable = element.getVariable() == 2 ? "x" : "";
+variable = element.getVariable() == 2 ? "x" : ""; //more mess overriding
 		String power = "" + (element.getPower() == 1 || element.getPower() == 0 ? "" : element.getPower());
 		
 		int drawX = WIDTH / 2 - (DrawUtils.getMessageWidth(coefficient + variable, font, g) + DrawUtils.getMessageWidth(power, powerFont, g)) / 2;

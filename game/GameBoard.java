@@ -276,14 +276,14 @@ public class GameBoard {
 		t1.setElement(a);
 	}
 	
-	private boolean colOperate(int col, Operators operation){
+	private boolean colOperate(int col, Operators operation, int direction){
 		Tile[] column = new Tile[board.length];
 		for(int row = 0; row < ROWS; row++){
 			column[row] = board[row][col];
 		}
 		ArrayList<Tile> operatedCol = null;
 		if(operation == Operators.INTEGRAL){
-			operatedCol = integral(column);
+			operatedCol = integral(column, direction);
 			if(operatedCol.size() > board.length){
 				setDead(true);
 			}
@@ -294,6 +294,7 @@ public class GameBoard {
 		if(operatedCol.size() == 0){
 			return false;
 		}
+		if(direction == UP){
 		for(int row = 0; row < ROWS; row++){
 			if(row < operatedCol.size()){
 				board[row][col] = operatedCol.get(row);
@@ -303,19 +304,32 @@ public class GameBoard {
 				board[row][col] = null;
 			}
 		}
+		}else{
+			int passes = operatedCol.size()-1;
+			for(int row = ROWS-1; row >= 0; row--){
+				if(passes > 0){
+					board[row][col] = operatedCol.get(passes);
+					board[row][col].redraw();
+					passes--;
+				}
+				else{
+					board[row][col] = null;
+				}
+			}
+		}
 		return true;
 	}
 
 	
-//fix to be able to conform to direction
-	private boolean rowOperate(int r, Operators operation){
+//fix to be able to conform to direction + not multiple operators in one row
+	private boolean rowOperate(int r, Operators operation, int direction){
 		Tile[] row = new Tile[board[r].length];
 		for(int col = 0; col < COLS; col++){
 			row[col] = board[r][col];
 		}
 		ArrayList<Tile> operatedRow = null;
 		if(operation == Operators.INTEGRAL){
-			operatedRow = integral(row);
+			operatedRow = integral(row, direction);
 			if(operatedRow.size() > board[r].length){
 				setDead(true);
 			}
@@ -326,6 +340,7 @@ public class GameBoard {
 		if(operatedRow.size() == 0){
 			return false;
 		}
+		if(direction == LEFT){
 		for(int col = 0; col < COLS; col++){
 			if(col < operatedRow.size()){
 				board[r][col] = operatedRow.get(col);
@@ -335,10 +350,23 @@ public class GameBoard {
 				board[r][col] = null;
 			}
 		}
+		}else{
+			int passes = operatedRow.size()-1;
+			for(int col = COLS-1; col >= 0; col--){
+				if(passes > 0){
+					board[r][col] = operatedRow.get(passes);
+					board[r][col].redraw();
+					passes--;
+				}
+				else{
+					board[r][col] = null;
+				}
+		}
+		}
 		return true;
 	}
 	
-	private ArrayList<Tile> integral(Tile[] tiles){
+	private ArrayList<Tile> integral(Tile[] tiles, int direction){
 		ArrayList<Tile> integratedTiles = new ArrayList<>();
 		for(Tile each : tiles){
 			if(each == null || each.getElement().isOperator()){
@@ -354,7 +382,10 @@ public class GameBoard {
 			integratedTiles.add(each);
 		}
 		if(!integratedTiles.isEmpty()){
-			integratedTiles.add(new Tile(new Element(1, 1, 1), integratedTiles.get(0).getX(), integratedTiles.get(0).getY()));
+			if(direction == LEFT || direction == UP){
+				integratedTiles.add(0, new Tile(new Element(1, 1, 1), integratedTiles.get(0).getX(), integratedTiles.get(0).getY()));
+			}
+			else{integratedTiles.add(new Tile(new Element(1, 1, 1), integratedTiles.get(0).getX(), integratedTiles.get(0).getY()));}
 		}
 		return integratedTiles;
 	}
@@ -403,7 +434,7 @@ public class GameBoard {
 					}
 				}
 				if(operate){
-					boolean operated = rowOperate(row, operation);
+					boolean operated = rowOperate(row, operation, LEFT);
 					if(operated){
 						continue;
 					}
@@ -432,7 +463,7 @@ public class GameBoard {
 					}
 				}
 				if(operate){
-					boolean operated = rowOperate(row, operation);
+					boolean operated = rowOperate(row, operation, RIGHT);
 					if(operated){
 						continue;
 					}
@@ -461,7 +492,7 @@ public class GameBoard {
 					}
 				}
 				if(operate){
-					boolean operated = colOperate(col, operation);
+					boolean operated = colOperate(col, operation, UP);
 					if(operated){
 						continue;
 					}
@@ -492,7 +523,7 @@ public class GameBoard {
 					}
 				}
 				if(operate){
-					boolean operated = colOperate(col, operation);
+					boolean operated = colOperate(col, operation, DOWN);
 					if(operated){
 						continue;
 					}
